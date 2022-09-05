@@ -34,7 +34,8 @@ def automatic(ban, pick):
             window['process'].update('Searching...')
             if pag.locateOnScreen('info.png', confidence=0.8) != None:
                 locate_click('search.png')
-                pag.write(f'{ban}')
+                if ban != 'none':
+                    pag.write(f'{ban}')
                 searched = True
                 time.sleep(2)
                 
@@ -57,7 +58,8 @@ def automatic(ban, pick):
             window['process'].update('Searching...')
             if pag.locateOnScreen('info_1.png', confidence=0.8) != None:
                 locate_click('search.png')
-                pag.write(f'{pick}')
+                if pick != 'random':
+                    pag.write(f'{pick}')
                 searched_1 = True
                 time.sleep(2)
                 
@@ -90,7 +92,7 @@ layout = [
     [sg.Listbox(champions_dis, size=(30,20), key='bans', enable_events=True), sg.Listbox(champions_dis, size=(30,20), key='picks', enable_events=True)],
     [sg.Input('', size=(30), key='ban', enable_events=True), sg.Input('', size=(30), key='pick', enable_events=True)],
     [sg.Image(img(ban), key='ban_img', enable_events=True), sg.Image(img(pick), key='pick_img', enable_events=True)],
-    [sg.Ok(), sg.Cancel()],
+    [sg.Ok(), sg.Cancel(), sg.Button('Reset', key='Reset')],
     [sg.Text('Processing', key='process', enable_events=True)]
 ]
 
@@ -119,6 +121,9 @@ while True:
         
     if event == 'Ok':
         window.perform_long_operation(lambda: automatic(ban, pick), 'process')
+        
+    if event == 'Reset':
+        continue
 
 window.close()
 
