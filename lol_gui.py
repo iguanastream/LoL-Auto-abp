@@ -1,11 +1,22 @@
 import PySimpleGUI as sg
 import os
+import sys
 import glob
 import pyautogui as pag
 import time
+import re
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 def img(image):
-    return os.path.join('Champions', f'{image}.png')
+    return resource_path(os.path.join('Champions', f'{image}.png'))
 
 def locate_click(image):
     pag.leftClick(pag.locateCenterOnScreen(image, confidence=0.7))
@@ -44,8 +55,8 @@ def automatic(ban, pick):
         
         while accepted == False and reset == False:
             window['process'].update('Accepting...')
-            if pag.locateOnScreen('accept.png', confidence=0.8) != None:
-                locate_click('accept.png')
+            if pag.locateOnScreen(resource_path(os.path.join('utils', 'accept.png')), confidence=0.8) != None:
+                locate_click(resource_path(os.path.join('utils', 'accept.png')))
                 accepted = True
                 window['process'].update('Accepted')
                 time.sleep(30)
@@ -53,8 +64,8 @@ def automatic(ban, pick):
             
         while searched == False and reset == False:
             window['process'].update('Searching...')
-            if pag.locateOnScreen('info.png', confidence=0.8) != None:
-                locate_click('search.png')
+            if pag.locateOnScreen(resource_path(os.path.join('utils', 'info.png')), confidence=0.8) != None:
+                locate_click(resource_path(os.path.join('utils', 'search.png')))
                 if ban != 'none':
                     pag.write(f'{ban}')
                 searched = True
@@ -69,16 +80,16 @@ def automatic(ban, pick):
                 
         while banned == False and reset == False:
             window['process'].update('Banning...')
-            if pag.locateOnScreen('ban.png', confidence=0.8) != None:
-                locate_click('ban.png')
+            if pag.locateOnScreen(resource_path(os.path.join('utils', 'ban.png')), confidence=0.8) != None:
+                locate_click(resource_path(os.path.join('utils', 'ban.png')))
                 banned = True
                 window['process'].update("Banned")
                 time.sleep(3)
                 
         while searched_1 == False and reset == False:
             window['process'].update('Searching...')
-            if pag.locateOnScreen('info_1.png', confidence=0.8) != None:
-                locate_click('search.png')
+            if pag.locateOnScreen(resource_path(os.path.join('utils', 'info_1.png')), confidence=0.8) != None:
+                locate_click(resource_path(os.path.join('utils', 'search.png')))
                 if pick != 'random':
                     pag.write(f'{pick}')
                 searched_1 = True
@@ -92,8 +103,8 @@ def automatic(ban, pick):
                 
         while locked == False and reset == False:
             window['process'].update('Locking...')
-            if pag.locateOnScreen('lock.png', confidence=0.8) != None:
-                locate_click('lock.png')
+            if pag.locateOnScreen(resource_path(os.path.join('utils', 'lock.png')), confidence=0.8) != None:
+                locate_click(resource_path(os.path.join('utils', 'lock.png')))
                 locked = True
                 done = True
                 window['process'].update('Done')
@@ -101,10 +112,10 @@ def automatic(ban, pick):
 
 pick = 'random'
 ban = 'none'
-champions_sel = glob.glob(os.path.join('Champions', '*.png'))
+champions_sel = glob.glob(resource_path(os.path.join('Champions', '*.png')))
 champions_dis = []
 for champ in champions_sel:
-    champions_dis.append(champ.replace('Champions\\', '').replace('.png', ''))
+    champions_dis.append(re.search("[a-z]*\.png", champ, flags = re.I)[0].replace('.png', ''))
 
 sg.theme('Dark')
 
