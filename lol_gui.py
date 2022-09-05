@@ -83,7 +83,7 @@ def automatic(ban, pick):
             window['process'].update('Searching...')
             if pag.locateOnScreen(resource_path(img('info', 'utils')), confidence=0.8) != None:
                 locate_click(resource_path(img('search', 'utils')))
-                if ban != 'none':
+                if ban != 'none':   
                     pag.write(f'{ban}')
                 searched = True
                 time.sleep(2)
@@ -147,7 +147,7 @@ layout = [
     [sg.Text('Waiting...', key='process', enable_events=True)]
 ]
 
-window = sg.Window('LoL Auto-ab&p', layout)
+window = sg.Window('LoL Auto-ab&p', layout, icon=resource_path(os.path.join('utils', 'icon.ico')))
 
 while True: # Checking what button was prest
     event, values = window.read()
