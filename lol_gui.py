@@ -15,11 +15,25 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-def img(image):
-    return resource_path(os.path.join('Champions', f'{image}.png'))
+def img(image, path):
+    """Creates a shorter code for easier readability
 
-def locate_click(image):
-    pag.leftClick(pag.locateCenterOnScreen(image, confidence=0.7))
+    Args:
+        image (str): name of the image
+        path (str): name of the path in with the image is located
+
+    Returns:
+        str: absolute path of the file
+    """
+    return resource_path(os.path.join(f'{path}', f'{image}.png'))
+
+def locate_click(path):
+    """finds the location of a given image path
+
+    Args:
+        path (str): path to the given image
+    """
+    pag.leftClick(pag.locateCenterOnScreen(path, confidence=0.7))
 
 reset = False
 accepted = False
@@ -32,6 +46,12 @@ locked = False
 done = False
 
 def automatic(ban, pick):
+    """A magick function in with all of the automation happens
+
+    Args:
+        ban (str): name of the champion to ban
+        pick (str): name of the champion to pick
+    """
     global reset
     global accepted
     global searched
@@ -43,20 +63,17 @@ def automatic(ban, pick):
     global done
 
     reset = False
-    # accepted = False
     searched = False
     searched_1 = False
     selected = False
-    # banned = False
-    # picked = False
     locked = False
     done = False
     while done == False and reset == False:
         
         while accepted == False and reset == False:
             window['process'].update('Accepting...')
-            if pag.locateOnScreen(resource_path(os.path.join('utils', 'accept.png')), confidence=0.8) != None:
-                locate_click(resource_path(os.path.join('utils', 'accept.png')))
+            if pag.locateOnScreen(resource_path(img('accept', 'utils')), confidence=0.8) != None:
+                locate_click(resource_path(img('accept', 'utils')))
                 accepted = True
                 window['process'].update('Accepted')
                 time.sleep(30)
@@ -64,8 +81,8 @@ def automatic(ban, pick):
             
         while searched == False and reset == False:
             window['process'].update('Searching...')
-            if pag.locateOnScreen(resource_path(os.path.join('utils', 'info.png')), confidence=0.8) != None:
-                locate_click(resource_path(os.path.join('utils', 'search.png')))
+            if pag.locateOnScreen(resource_path(img('info', 'utils')), confidence=0.8) != None:
+                locate_click(resource_path(img('search', 'utils')))
                 if ban != 'none':
                     pag.write(f'{ban}')
                 searched = True
@@ -73,23 +90,23 @@ def automatic(ban, pick):
                 
         while selected == False and reset == False:
             window['process'].update('Selecting...')
-            if pag.locateOnScreen(img(ban), confidence=0.6) != None:
-                locate_click(img(ban))
+            if pag.locateOnScreen(img(ban, 'Champions'), confidence=0.6) != None:
+                locate_click(img(ban, 'Champions'))
                 selected = True
                 time.sleep(1)
                 
         while banned == False and reset == False:
             window['process'].update('Banning...')
-            if pag.locateOnScreen(resource_path(os.path.join('utils', 'ban.png')), confidence=0.8) != None:
-                locate_click(resource_path(os.path.join('utils', 'ban.png')))
+            if pag.locateOnScreen(resource_path(img('ban', 'utils')), confidence=0.8) != None:
+                locate_click(resource_path(img('ban', 'utils')))
                 banned = True
                 window['process'].update("Banned")
                 time.sleep(3)
                 
         while searched_1 == False and reset == False:
             window['process'].update('Searching...')
-            if pag.locateOnScreen(resource_path(os.path.join('utils', 'info_1.png')), confidence=0.8) != None:
-                locate_click(resource_path(os.path.join('utils', 'search.png')))
+            if pag.locateOnScreen(resource_path(img('info_1', 'utils')), confidence=0.8) != None:
+                locate_click(resource_path(img('search', 'utils')))
                 if pick != 'random':
                     pag.write(f'{pick}')
                 searched_1 = True
@@ -97,24 +114,25 @@ def automatic(ban, pick):
                 
         while picked == False and reset == False:
             window['process'].update('Picking...')
-            if pag.locateOnScreen(img(pick), confidence=0.8) != None:
-                locate_click(img(pick))
+            if pag.locateOnScreen(img(pick, 'Champions'), confidence=0.8) != None:
+                locate_click(img(pick, 'Champions'))
                 picked = True
                 
         while locked == False and reset == False:
             window['process'].update('Locking...')
-            if pag.locateOnScreen(resource_path(os.path.join('utils', 'lock.png')), confidence=0.8) != None:
-                locate_click(resource_path(os.path.join('utils', 'lock.png')))
+            if pag.locateOnScreen(resource_path(img('lock', 'utils')), confidence=0.8) != None:
+                locate_click(resource_path(img('lock', 'utils')))
                 locked = True
                 done = True
                 window['process'].update('Done')
 
-
+# Default values for ban and pick
 pick = 'random'
 ban = 'none'
-champions_sel = glob.glob(resource_path(os.path.join('Champions', '*.png')))
+
+champions_sel = glob.glob(resource_path(img('*', 'Champions')))
 champions_dis = []
-for champ in champions_sel:
+for champ in champions_sel: # Replaces log name of the absolute path of the images to names of champions
     champions_dis.append(re.search("[a-z]*\.png", champ, flags = re.I)[0].replace('.png', ''))
 
 sg.theme('Dark')
@@ -123,7 +141,7 @@ layout = [
     [sg.Text('What champion do you want do ban? \nDefault is none.'), sg.Text('What champion do you want to pick? \nDefault is random.')],
     [sg.Listbox(champions_dis, size=(30,20), key='bans', enable_events=True), sg.Listbox(champions_dis, size=(30,20), key='picks', enable_events=True)],
     [sg.Input('', size=(30), key='ban', enable_events=True), sg.Input('', size=(30), key='pick', enable_events=True)],
-    [sg.Image(img(ban), key='ban_img', enable_events=True), sg.Image(img(pick), key='pick_img', enable_events=True), 
+    [sg.Image(img(ban, 'Champions'), key='ban_img', enable_events=True), sg.Image(img(pick, 'Champions'), key='pick_img', enable_events=True), 
         sg.Checkbox('Auto Accept', True, key = 'auto_accept'), sg.Checkbox('Auto Ban', True, key = 'auto_ban'), sg.Checkbox('Auto Pick', True, key = 'auto_pick')],
     [sg.Ok(), sg.Cancel(), sg.Button('Reset', key='Reset')],
     [sg.Text('Waiting...', key='process', enable_events=True)]
@@ -131,7 +149,7 @@ layout = [
 
 window = sg.Window('LoL Auto-ab&p', layout)
 
-while True:
+while True: # Checking what button was prest
     event, values = window.read()
     if event == sg.WIN_CLOSED or event == 'Cancel':
         break
@@ -147,31 +165,39 @@ while True:
         
     if event == 'bans':
         ban = str(values['bans']).replace('\'', '').replace('[', '').replace(']', '')
-        window['ban_img'].update(img(ban))
+        window['ban_img'].update(img(ban, 'Champions'))
     elif event == 'picks':
         pick = str(values['picks']).replace('\'', '').replace('[', '').replace(']', '')
-        window['pick_img'].update(img(pick))
+        window['pick_img'].update(img(pick, 'Champions'))
         
     if event == 'Ok':
         if values['auto_accept'] == False:
             accepted = True
         if values['auto_ban'] == False:
             banned = True
+            searched = True
+            selected = True
         if values['auto_pick'] == False:
             picked = True
+            searched_1 = True
+            locked = True
         window.perform_long_operation(lambda: automatic(ban, pick), 'process')
         
     if event == 'Reset':
         reset = True
         window['process'].update('Waiting...')
-        window['ban_img'].update(img('none'))
-        window['pick_img'].update(img('random'))
+        window['ban_img'].update(img('none', 'Champions'))
+        window['pick_img'].update(img('random', 'Champions'))
         window['auto_accept'].update(True)
         window['auto_ban'].update(True)
         window['auto_pick'].update(True)
         accepted = False
         banned = False
+        searched = False
+        selected = False
         picked = False
+        searched_1 = False
+        locked = False
         
         
 
