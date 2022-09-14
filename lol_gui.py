@@ -33,7 +33,7 @@ def locate_click(path):
     Args:
         path (str): path to the given image
     """
-    pag.leftClick(pag.locateCenterOnScreen(path, confidence=0.7))
+    pag.leftClick(pag.locateCenterOnScreen(path, confidence=0.6))
 
 reset = False
 accepted = False
@@ -68,6 +68,7 @@ def automatic(ban, pick):
     selected = False
     locked = False
     done = False
+    #TODO if done is true set all the vaues to false
     while done == False and reset == False:
         
         while accepted == False and reset == False:
@@ -85,15 +86,18 @@ def automatic(ban, pick):
                 locate_click(resource_path(img('search', 'utils')))
                 if ban != 'none':   
                     pag.write(f'{ban}')
-                searched = True
-                time.sleep(2)
+                    searched = True
+                elif ban == 'none':
+                    searched = True
+                time.sleep(1)
                 
         while selected == False and reset == False:
             window['process'].update('Selecting...')
             if pag.locateOnScreen(img(ban, 'Champions'), confidence=0.6) != None:
+                time.sleep(1)
                 locate_click(img(ban, 'Champions'))
                 selected = True
-                time.sleep(1)
+            time.sleep(1)
                 
         while banned == False and reset == False:
             window['process'].update('Banning...')
@@ -109,8 +113,10 @@ def automatic(ban, pick):
                 locate_click(resource_path(img('search', 'utils')))
                 if pick != 'random':
                     pag.write(f'{pick}')
-                searched_1 = True
-                time.sleep(2)
+                    searched_1 = True
+                elif pick == 'random':
+                    searched_1 = True
+                time.sleep(1)
                 
         while picked == False and reset == False:
             window['process'].update('Picking...')

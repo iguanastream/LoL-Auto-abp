@@ -3,7 +3,7 @@ import PyInstaller.__main__
 
 PyInstaller.__main__.run([
     'lol_gui.py',
-    '--ico=utils/icon.ico',
+    '--icon=utils/icon.ico',
     '--onefile',
     '--windowed',
     '--add-data=Champions/*;Champions',
