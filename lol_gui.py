@@ -5,6 +5,7 @@ import glob
 import pyautogui as pag
 import time
 import re
+from random import randrange
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -34,6 +35,8 @@ def locate_click(path):
         path (str): path to the given image
     """
     pag.leftClick(pag.locateCenterOnScreen(path, confidence=0.6))
+def random_champ():
+    return champions_dis[randrange(len(champions_dis))]
 
 reset = False
 accepted = False
@@ -68,7 +71,7 @@ def automatic(ban, pick):
     selected = False
     locked = False
     done = False
-    #TODO if done is true set all the vaues to false
+    
     while done == False and reset == False:
         
         while accepted == False and reset == False:
@@ -149,7 +152,7 @@ layout = [
     [sg.Input('', size=(30), key='ban', enable_events=True), sg.Input('', size=(30), key='pick', enable_events=True)],
     [sg.Image(img(ban, 'Champions'), key='ban_img', enable_events=True), sg.Image(img(pick, 'Champions'), key='pick_img', enable_events=True), 
         sg.Checkbox('Auto Accept', True, key = 'auto_accept'), sg.Checkbox('Auto Ban', True, key = 'auto_ban'), sg.Checkbox('Auto Pick', True, key = 'auto_pick')],
-    [sg.Ok(), sg.Cancel(), sg.Button('Reset', key='Reset')],
+    [sg.Ok(), sg.Cancel(), sg.Button('Reset', key='Reset'), sg.Radio('Random in game', 1, True, key = 'in_game'), sg.Radio('Random in program', 1, False, key = 'in_app')],
     [sg.Text('Waiting...', key='process', enable_events=True)]
 ]
 
@@ -187,7 +190,10 @@ while True: # Checking what button was prest
             picked = True
             searched_1 = True
             locked = True
-        window.perform_long_operation(lambda: automatic(ban, pick), 'process')
+        if values['in_game'] == True:
+            window.perform_long_operation(lambda: automatic(ban, pick), 'process')
+        if values['in_app'] == True:
+            window.perform_long_operation(lambda: automatic(ban, random_champ()), 'process')
         
     if event == 'Reset':
         reset = True
@@ -197,6 +203,8 @@ while True: # Checking what button was prest
         window['auto_accept'].update(True)
         window['auto_ban'].update(True)
         window['auto_pick'].update(True)
+        window['ban'].update('')
+        window['pick'].update('')
         accepted = False
         banned = False
         searched = False
