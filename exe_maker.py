@@ -2,7 +2,7 @@ from distutils.command.clean import clean
 import PyInstaller.__main__
 
 PyInstaller.__main__.run([
-    'lol_gui.py',
+    'lol_a_abp.py',
     '--icon=utils/icon.ico',
     '--onefile',
     '--windowed',
