@@ -3,7 +3,7 @@
 ## Requirements
 
 Don't keep the window next to the LoL client,\
-Window size should be 1024x576,\
+Window size should be 1024x576,
 
 ## Features
 
