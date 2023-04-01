@@ -1,0 +1,7 @@
+Lib/*
+Scripts/*
+pyvenv.cfg
+.idea/*
+.vscode/*
+__pycache__/*
+lol_a_abp.spec
