@@ -5,3 +5,5 @@ pyvenv.cfg
 .vscode/*
 __pycache__/*
 lol_a_abp.spec
+build/*
+dist/*
